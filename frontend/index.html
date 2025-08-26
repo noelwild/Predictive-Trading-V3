@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1-Second Trading System v3.0</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="title">1-Second Trading System v3.0</h1>
+                        <p class="subtitle">AI-Powered High-Frequency Trading Platform with Multi-Timeframe Predictions</p>
+                    </div>
+                    <button id="refresh-btn" class="refresh-btn">
+                        <svg class="refresh-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
+                            <path d="M21 3v5h-5"/>
+                            <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/>
+                            <path d="M3 21v-5h5"/>
+                        </svg>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- System Status Cards -->
+        <section class="status-section">
+            <div class="container">
+                <div class="status-grid">
+                    <div class="status-card">
+                        <div class="status-card-header">
+                            <h3 class="status-card-title">System Status</h3>
+                        </div>
+                        <div class="status-card-content">
+                            <div class="status-indicator">
+                                <svg class="status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                </svg>
+                                <span id="system-health" class="status-text">healthy</span>
+                            </div>
+                            <div id="system-phase" class="status-badge">initialization</div>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-card-header">
+                            <h3 class="status-card-title">Total P&L</h3>
+                        </div>
+                        <div class="status-card-content">
+                            <div class="status-indicator">
+                                <svg class="status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="12" y1="1" x2="12" y2="23"/>
+                                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                                </svg>
+                                <span id="total-pnl" class="status-text pnl-positive">$0</span>
+                            </div>
+                            <p class="status-subtitle">Today's Performance</p>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-card-header">
+                            <h3 class="status-card-title">Active Models</h3>
+                        </div>
+                        <div class="status-card-content">
+                            <div class="status-indicator">
+                                <svg class="status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 3.44-3.04Z"/>
+                                </svg>
+                                <span id="active-models" class="status-text">0</span>
+                            </div>
+                            <p class="status-subtitle">ML Models Running</p>
+                        </div>
+                    </div>
+
+                    <div class="status-card">
+                        <div class="status-card-header">
+                            <h3 class="status-card-title">Positions</h3>
+                        </div>
+                        <div class="status-card-content">
+                            <div class="status-indicator">
+                                <svg class="status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <circle cx="12" cy="12" r="6"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                </svg>
+                                <span id="total-positions" class="status-text">0</span>
+                            </div>
+                            <p class="status-subtitle">Open Positions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Navigation Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="dashboard">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="14" y="14" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                        </svg>
+                        Dashboard
+                    </button>
+                    <button class="tab-btn" data-tab="control">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+                        </svg>
+                        Control
+                    </button>
+                    <button class="tab-btn" data-tab="brokers">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/>
+                            <path d="M3 6h18"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        Brokers
+                    </button>
+                    <button class="tab-btn" data-tab="performance">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"/>
+                            <path d="M7 12l4-4 4 4 6-6"/>
+                        </svg>
+                        Performance
+                    </button>
+                </div>
+
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Dashboard Tab -->
+                    <div id="dashboard-tab" class="tab-pane active">
+                        <!-- Predictions Grid -->
+                        <div class="predictions-grid">
+                            <div class="prediction-card" id="prediction-500ms">
+                                <div class="prediction-header">
+                                    <h4>500ms Prediction</h4>
+                                </div>
+                                <div class="prediction-content">
+                                    <div class="prediction-direction hold">HOLD</div>
+                                    <div class="prediction-confidence">0.0%</div>
+                                    <div class="prediction-regime">normal</div>
+                                </div>
+                            </div>
+
+                            <div class="prediction-card" id="prediction-1s">
+                                <div class="prediction-header">
+                                    <h4>1s Prediction</h4>
+                                </div>
+                                <div class="prediction-content">
+                                    <div class="prediction-direction hold">HOLD</div>
+                                    <div class="prediction-confidence">0.0%</div>
+                                    <div class="prediction-regime">normal</div>
+                                </div>
+                            </div>
+
+                            <div class="prediction-card" id="prediction-5s">
+                                <div class="prediction-header">
+                                    <h4>5s Prediction</h4>
+                                </div>
+                                <div class="prediction-content">
+                                    <div class="prediction-direction hold">HOLD</div>
+                                    <div class="prediction-confidence">0.0%</div>
+                                    <div class="prediction-regime">normal</div>
+                                </div>
+                            </div>
+
+                            <div class="prediction-card" id="prediction-10s">
+                                <div class="prediction-header">
+                                    <h4>10s Prediction</h4>
+                                </div>
+                                <div class="prediction-content">
+                                    <div class="prediction-direction hold">HOLD</div>
+                                    <div class="prediction-confidence">0.0%</div>
+                                    <div class="prediction-regime">normal</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Trading Signals -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Recent Trading Signals</h3>
+                            </div>
+                            <div class="section-content">
+                                <div id="signals-list" class="signals-list">
+                                    <p class="empty-state">No trading signals yet</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Open Positions -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Open Positions</h3>
+                            </div>
+                            <div class="section-content">
+                                <div id="positions-list" class="positions-list">
+                                    <p class="empty-state">No open positions</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Control Tab -->
+                    <div id="control-tab" class="tab-pane">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>System Control</h3>
+                                <p class="section-description">Control the trading system phases and operations</p>
+                            </div>
+                            <div class="section-content">
+                                <!-- Data Collection -->
+                                <div class="control-section">
+                                    <h4>1. Data Collection</h4>
+                                    <div class="form-group">
+                                        <label for="symbols-input">Trading Symbols</label>
+                                        <textarea 
+                                            id="symbols-input" 
+                                            class="symbols-input"
+                                            placeholder="Enter symbols separated by commas (e.g., AAPL,MSFT,GOOGL)"
+                                        >AAPL,MSFT,GOOGL,TSLA,NVDA</textarea>
+                                    </div>
+                                    <button id="start-data-collection" class="control-btn primary">
+                                        Start Data Collection
+                                    </button>
+                                </div>
+
+                                <div class="control-divider"></div>
+
+                                <!-- Model Training -->
+                                <div class="control-section">
+                                    <h4>2. Model Training</h4>
+                                    <button id="train-models" class="control-btn secondary" disabled>
+                                        Train ML Models
+                                    </button>
+                                </div>
+
+                                <div class="control-divider"></div>
+
+                                <!-- Trading Control -->
+                                <div class="control-section">
+                                    <h4>3. Trading Control</h4>
+                                    
+                                    <!-- Trading Mode Toggle -->
+                                    <div class="form-group">
+                                        <label class="trading-mode-label">
+                                            <span class="mode-label">Trading Mode:</span>
+                                            <div class="trading-mode-toggle">
+                                                <input type="checkbox" id="trading-mode-toggle" checked>
+                                                <span class="toggle-slider"></span>
+                                                <span class="mode-text">
+                                                    <span class="paper-mode">📄 Paper Trading</span>
+                                                    <span class="live-mode">🔥 LIVE TRADING</span>
+                                                </span>
+                                            </div>
+                                        </label>
+                                        <p class="mode-description">
+                                            <span id="mode-description">Safe paper trading with fake money (recommended for testing)</span>
+                                        </p>
+                                    </div>
+                                    
+                                    <!-- Broker Status -->
+                                    <div class="broker-status-section">
+                                        <div class="broker-status-header">
+                                            <span>Active Broker:</span>
+                                            <span id="active-broker-name" class="broker-status-text">None</span>
+                                            <div id="broker-connection-status" class="broker-connection-dot offline"></div>
+                                        </div>
+                                        <div id="account-info" class="account-info hidden">
+                                            <div class="account-item">
+                                                <span>Buying Power:</span>
+                                                <span id="buying-power">$0</span>
+                                            </div>
+                                            <div class="account-item">
+                                                <span>Portfolio Value:</span>
+                                                <span id="portfolio-value">$0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="trading-controls">
+                                        <button id="start-trading" class="control-btn success" disabled>
+                                            ▶ Start Trading
+                                        </button>
+                                        <button id="stop-trading" class="control-btn danger" disabled>
+                                            ⏹ Stop Trading
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Live Trading Warning -->
+                                    <div id="live-trading-warning" class="live-trading-warning hidden">
+                                        <div class="warning-content">
+                                            <svg class="warning-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                                            </svg>
+                                            <div class="warning-text">
+                                                <strong>⚠️ LIVE TRADING MODE</strong>
+                                                <p>You are about to trade with REAL MONEY. Ensure:</p>
+                                                <ul>
+                                                    <li>✅ Broker is properly configured and connected</li>
+                                                    <li>✅ Models have been tested in paper mode</li>
+                                                    <li>✅ Risk limits are set appropriately</li>
+                                                    <li>✅ You understand the trading strategy</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="control-divider"></div>
+
+                                <!-- Quick Test -->
+                                <div class="control-section">
+                                    <h4>Quick Prediction Test</h4>
+                                    <div class="test-controls">
+                                        <select id="test-symbol" class="symbol-select">
+                                            <option value="AAPL">AAPL</option>
+                                            <option value="MSFT">MSFT</option>
+                                            <option value="GOOGL">GOOGL</option>
+                                            <option value="TSLA">TSLA</option>
+                                            <option value="NVDA">NVDA</option>
+                                        </select>
+                                        <button id="test-prediction" class="control-btn info">
+                                            Test Prediction
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Brokers Tab -->
+                    <div id="brokers-tab" class="tab-pane">
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Broker Configuration</h3>
+                                <p class="section-description">Configure your trading brokers and API connections</p>
+                            </div>
+                            <div class="section-content">
+                                <form id="broker-form" class="broker-form">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="broker-name">Broker Name</label>
+                                            <input 
+                                                type="text" 
+                                                id="broker-name" 
+                                                class="form-input"
+                                                placeholder="Interactive Brokers"
+                                                required
+                                            />
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="broker-type">Broker Type</label>
+                                            <select id="broker-type" class="form-select" required>
+                                                <option value="">Select broker type</option>
+                                                <option value="alpaca">Alpaca</option>
+                                                <option value="interactive_brokers">Interactive Brokers</option>
+                                                <option value="td_ameritrade">TD Ameritrade</option>
+                                                <option value="binance">Binance</option>
+                                                <option value="coinbase">Coinbase Pro</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="api-key">API Key</label>
+                                        <input 
+                                            type="password" 
+                                            id="api-key" 
+                                            class="form-input"
+                                            placeholder="Enter API key"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="api-secret">API Secret</label>
+                                        <input 
+                                            type="password" 
+                                            id="api-secret" 
+                                            class="form-input"
+                                            placeholder="Enter API secret"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="checkbox-label">
+                                            <input type="checkbox" id="sandbox-mode" checked>
+                                            <span class="checkmark"></span>
+                                            Sandbox Mode (Safe Testing)
+                                        </label>
+                                    </div>
+
+                                    <button type="submit" class="control-btn primary full-width">
+                                        Add Broker Configuration
+                                    </button>
+                                </form>
+
+                                <!-- Configured Brokers -->
+                                <div id="brokers-list" class="brokers-list">
+                                    <h4>Configured Brokers</h4>
+                                    <div id="brokers-container" class="brokers-container">
+                                        <p class="empty-state">No brokers configured yet</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance Tab -->
+                    <div id="performance-tab" class="tab-pane">
+                        <div class="performance-grid">
+                            <div class="performance-card">
+                                <div class="performance-header">
+                                    <h4>Total P&L</h4>
+                                </div>
+                                <div class="performance-content">
+                                    <div id="perf-total-pnl" class="performance-value">$0</div>
+                                </div>
+                            </div>
+
+                            <div class="performance-card">
+                                <div class="performance-header">
+                                    <h4>Win Rate</h4>
+                                </div>
+                                <div class="performance-content">
+                                    <div id="perf-win-rate" class="performance-value">0.0%</div>
+                                </div>
+                            </div>
+
+                            <div class="performance-card">
+                                <div class="performance-header">
+                                    <h4>Sharpe Ratio</h4>
+                                </div>
+                                <div class="performance-content">
+                                    <div id="perf-sharpe-ratio" class="performance-value">0.00</div>
+                                </div>
+                            </div>
+
+                            <div class="performance-card">
+                                <div class="performance-header">
+                                    <h4>Trading Days</h4>
+                                </div>
+                                <div class="performance-content">
+                                    <div id="perf-trading-days" class="performance-value">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Daily Performance -->
+                        <div class="section-card">
+                            <div class="section-header">
+                                <h3>Daily Performance</h3>
+                            </div>
+                            <div class="section-content">
+                                <div id="daily-performance" class="daily-performance">
+                                    <p class="empty-state">No performance data available yet</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notifications -->
+        <div id="notifications" class="notifications"></div>
+
+        <!-- Connection Status -->
+        <div id="connection-status" class="connection-status">
+            <div class="connection-indicator offline">
+                <span class="connection-dot"></span>
+                <span class="connection-text">Connecting...</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

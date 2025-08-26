@@ -1,0 +1,13 @@
+{
+  "name": "trading-system-frontend",
+  "version": "3.0.0",
+  "description": "1-Second Trading System v3.0 Frontend",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 3000",
+    "dev": "python3 -m http.server 3000"
+  },
+  "keywords": ["trading", "ai", "frontend"],
+  "author": "Trading System",
+  "license": "MIT"
+}
